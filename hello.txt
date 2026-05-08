@@ -1,3 +1,3 @@
 Hello, World! webアプリケーション開発
 変更して保存した際、新規作成されたものは名前が緑色に、既存のものは名前がオレンジ色になる
-status（確認）add（記録）commit（何を変えたか記録）push（githubに送信）
+status（確認）add（記録）commit（何を変えたか記録。更新時は同じ名前でも行ける）push（githubに送信）
