@@ -552,9 +552,9 @@ from pydantic import BaseModel, Field
 
 class TodoCreate(BaseModel):
     title: str = Field(
-        min_length=1,     # 1文字以上
-        max_length=100,   # 100文字以下
-        examples=["買い物に行く"]
+        min_length=1,     
+        max_length=100,  
+        example=["買い物に行く"] 
     )
 
 class TodoUpdate(BaseModel):
