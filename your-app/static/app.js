@@ -1,5 +1,5 @@
 /**
- * TODO App JavaScript - 完成版
+ * STUDY App JavaScript - 完成版
  * 第8回: セキュリティの基礎 & 総仕上げ
  *
  * 【このファイルの役割】
@@ -24,7 +24,7 @@ const API_URL = "/studies";
 // ============================================================
 
 /**
- * TODO一覧を取得して表示する
+ * 勉強記録一覧を取得して表示する
  */
 async function loadTodos() {
   // try ... catch: 通信中にエラーが起きても、アプリが止まらないようにする
@@ -35,7 +35,7 @@ async function loadTodos() {
     // response.ok が false = サーバーがエラーを返したとき
     if (!response.ok) {
       const error = await response.json(); // エラー内容を取り出す
-      showError(error.detail || "TODOの取得に失敗しました");
+      showError(error.detail || "勉強内容の取得に失敗しました");
       return; // ここで処理を終える
     }
 
@@ -49,7 +49,7 @@ async function loadTodos() {
 }
 
 /**
- * 新しいTODOを追加する
+ * 新しい勉強記録を追加する
  */
 async function addTodo() {
   // 入力欄の要素を取得し、入力された文字を読み取る（trimで前後の空白を除去）
@@ -58,7 +58,7 @@ async function addTodo() {
 
   // 送信前のチェック（バリデーション）: 空のときは送らずに注意を表示
   if (title === "") {
-    showError("TODOのタイトルを入力してください");
+    showError("勉強記録を入力してください");
     return;
   }
 
@@ -69,7 +69,7 @@ async function addTodo() {
   }
 
   try {
-    // サーバーに「このTODOを追加して」と送る
+    // サーバーに「この勉強記録を追加して」と送る
     const response = await fetch(API_URL, {
       method: "POST", // POST = 新しいデータを作る
       headers: { "Content-Type": "application/json" }, // 中身はJSON形式だと伝える
@@ -78,7 +78,7 @@ async function addTodo() {
 
     if (!response.ok) {
       const error = await response.json();
-      showError(error.detail || "TODOの追加に失敗しました");
+      showError(error.detail || "勉強記録の追加に失敗しました");
       return;
     }
 
@@ -91,7 +91,7 @@ async function addTodo() {
 
 /**
  * TODOの完了状態を切り替える
- * id: 対象のTODOの番号 / currentDone: いまの完了状態(true/false)
+ * id: 対象の勉強記録の番号 / currentDone: いまの完了状態(true/false)
  */
 async function toggleTodo(id, currentDone) {
   try {
@@ -104,7 +104,7 @@ async function toggleTodo(id, currentDone) {
 
     if (!response.ok) {
       const error = await response.json();
-      showError(error.detail || "TODOの更新に失敗しました");
+      showError(error.detail || "勉強記録の更新に失敗しました");
       return;
     }
 
@@ -115,7 +115,7 @@ async function toggleTodo(id, currentDone) {
 }
 
 /**
- * TODOを削除する
+ * 勉強記録を削除する
  * id: 削除したいTODOの番号
  */
 async function deleteTodo(id) {
@@ -127,7 +127,7 @@ async function deleteTodo(id) {
 
     if (!response.ok) {
       const error = await response.json();
-      showError(error.detail || "TODOの削除に失敗しました");
+      showError(error.detail || "勉強記録の削除に失敗しました");
       return;
     }
 
@@ -144,7 +144,7 @@ async function deleteTodo(id) {
 /**
  * TODOリストを描画する（XSS対策: createElement + textContent）
  *
- * 受け取ったTODOの配列をもとに、画面に並べる<li>を1件ずつ組み立てる。
+ * 受け取った勉強記録の配列をもとに、画面に並べる<li>を1件ずつ組み立てる。
  *
  * 【XSS対策のポイント】
  *  innerHTML に文字列を直接入れると、入力に紛れ込んだ<script>などが
@@ -155,7 +155,7 @@ function renderTodos(todos) {
   const list = document.getElementById("todo-list");
   list.innerHTML = ""; // 古い表示を一度すべて消してから描き直す
 
-  // todos配列の1件ずつ(todo)について、リストの行を作る
+  // studies配列の1件ずつ(todo)について、リストの行を作る
   todos.forEach((todo) => {
     // <li> 完了済みなら "done" クラスを足して見た目を変える
     const li = document.createElement("li");
@@ -173,7 +173,7 @@ function renderTodos(todos) {
     // チェックが変わったら、完了状態を切り替える関数を呼ぶ
     checkbox.addEventListener("change", () => toggleTodo(todo.id, todo.done));
 
-    // TODOのタイトル文字。textContent で安全に入れる（XSS対策）
+    // 勉強記録のタイトル文字。textContent で安全に入れる（XSS対策）
     const titleSpan = document.createElement("span");
     titleSpan.className = "todo-title";
     titleSpan.textContent = todo.title;
