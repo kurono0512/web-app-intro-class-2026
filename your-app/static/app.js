@@ -17,7 +17,7 @@
  */
 
 // サーバー側のAPIのアドレス（main.py の @app.get("/todos") などに対応）
-const API_URL = "/todos";
+const API_URL = "/studies";
 
 // ============================================================
 // TODO操作（CRUD）
