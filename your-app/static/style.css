@@ -226,9 +226,9 @@ body {
 
 .delete-button:hover {
   /* マウスを乗せると赤系に変わり、「削除」だと分かりやすくする */
-  background-color: #fef2f2;
-  color: #dc2626;
-  border-color: #fca5a5;
+  background-color: #e9f7ef;
+  color: #11b054;
+  border-color: #11b054;
 }
 
 /* --- ページフッター --- */
