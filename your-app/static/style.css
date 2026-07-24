@@ -15,22 +15,35 @@
 }
 
 /* ページ全体の基本スタイル */
+/*
 body {
-  /* 文字フォント。先頭から順に、使えるものが採用される（日本語フォントも指定） */
+   文字フォント。先頭から順に、使えるものが採用される（日本語フォントも指定） 
   font-family:
     "Helvetica Neue", Arial, "Hiragino Sans", "Noto Sans JP", sans-serif;
-  background-color: #eef2f7; /* 背景色（薄いグレー）。#から始まるのは色コード */
-  color: #2f3b4a; /* 文字色（濃いグレー） */
-  min-height: 100vh; /* 画面の高さいっぱいまで広げる（100vh=画面の高さ100%） */
-  display: flex; /* 中身をflexboxで並べる */
-  flex-direction: column; /* 縦方向（上から下）に並べる → ヘッダー/本文/フッター */
+  background-color: #eef2f7;  背景色（薄いグレー）。#から始まるのは色コード 
+  color: #2f3b4a;  文字色（濃いグレー） 
+  min-height: 100vh;  画面の高さいっぱいまで広げる（100vh=画面の高さ100%） 
+  display: flex;  中身をflexboxで並べる 
+  flex-direction: column;  縦方向（上から下）に並べる → ヘッダー/本文/フッター 
 }
-
+*/
+body {
+  font-family:
+    "Helvetica Neue", Arial, "Hiragino Sans", "Noto Sans JP", sans-serif;
+  background-color: #fdfdfb;
+  background-image:
+    linear-gradient(#d9e8ff 1px, transparent 1px);
+  background-size: 100% 32px;
+  color: #2f3b4a;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
 /* --- ヘッダー --- */
 .header {
   background-color: #ffffff; /* 青色の背景 */
   color: #2f3b4a; /* 白い文字 */
-  padding: 16px 24px; /* 内側の余白（上下16px / 左右24px） */
+  padding: 10px 24px; /* 内側の余白（上下16px / 左右24px） */
   text-align: center; /* 文字を中央ぞろえに */
   border-bottom: 3px solid #00a8cc;
   box-shadow: none; /* 下にうっすら影をつける */
@@ -46,7 +59,7 @@ body {
 /* TODO一覧をのせる白いカード部分 */
 .todo-card {
   background-color: white;
-  max-width: 600px; /* これ以上は横に広がらない（読みやすさのため） */
+  max-width: 650px; /* これ以上は横に広がらない（読みやすさのため） */
   width: 100%; /* 画面が狭いときは横幅いっぱいに */
   margin: 24px auto; /* 上下24px / 左右autoで中央に寄せる */
   padding: 32px; /* 内側の余白 */
@@ -72,14 +85,17 @@ body {
 /* 入力欄と追加ボタンを横並びにする箱 */
 .input-area {
   display: flex; /* 子要素を横並びに */
-  gap: 8px; /* 子要素どうしのすき間 */
+  gap: 12px; /* 子要素どうしのすき間 */
   margin-bottom: 24px;
+  flex-direction: column;
+  border-bottom: 1px solid #d5dee8;
+  padding-bottom: 20px;
 }
 
 /* テキスト入力欄 */
 .todo-input {
   flex: 1; /* 余った横幅をすべて使って広がる（ボタンの残り全部） */
-  padding: 12px 16px;
+  padding: 18px 20px;
   border: 1px solid #9fb3c8; /* グレーの枠線 */
   border-radius: 3px;
   font-size: 16px;
@@ -91,6 +107,27 @@ body {
 .todo-input:focus {
   border-color: #00a8cc; /* 入力中は枠線を青くする */
   box-shadow: 0 0 0 3px rgba(0, 168, 204, .15);
+}
+
+.priority-input {
+  padding: 18px 20px;
+  border: 1px solid #9fb3c8;
+  border-radius: 3px;
+  font-size: 16px;
+  background-color: #ffffff;
+  outline: none;
+  transition: border-color 0.3s;
+  width: 100px;
+}
+
+.input-row {
+  display: flex;
+  gap: 12px;
+}
+
+.priority-input:focus {
+  border-color: #00a8cc;
+  box-shadow: 0 0 0 3px rgba(0, 168, 204, 0.15);
 }
 
 /* 追加ボタン */
@@ -105,6 +142,8 @@ body {
   cursor: pointer; /* マウスを乗せると指のカーソルになる */
   transition: background-color 0.3s; /* 色の変化をなめらかに */
   white-space: nowrap; /* ボタンの文字を途中で改行させない */
+  align-self: flex-end;
+  width: 100px;
 }
 
 /* :hover = マウスを乗せたときだけ適用 */
@@ -129,11 +168,12 @@ body {
   border-radius: 3px;
   transition: background-color 0.2s;
   border-right: 4px;
-  border-left: 4px;
+  border-left: 5px solid #00a8cc;
 }
 
 .todo-item:hover {
   background-color: #e8f1fd; /* マウスを乗せた行をうっすら青く */
+  transform: translateX(6px);
 }
 
 /* チェックボックスとタイトルをまとめたラベル部分 */
@@ -163,6 +203,7 @@ body {
 .todo-item.done {
   background-color: #e9f5ee; /* 薄い緑の背景 */
   border-color: #b5e6c1;
+  border-left: 5px solid #2ecc71;
 }
 
 .todo-item.done .todo-title {
