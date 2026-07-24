@@ -128,7 +128,7 @@ async function deleteTodo(id) {
 
     if (!response.ok) {
       const error = await response.json();
-      showError(error.detail || "勉強記録の削除に失敗しました");
+      showError(error.detail || "勉強記録の達成に失敗しました");
       return;
     }
 
@@ -186,7 +186,7 @@ function renderTodos(todos) {
     // 削除ボタン。押されたら削除する関数を呼ぶ
     const deleteBtn = document.createElement("button");
     deleteBtn.className = "delete-button";
-    deleteBtn.textContent = "削除";
+    deleteBtn.textContent = "達成";
     deleteBtn.addEventListener("click", () => deleteTodo(todo.id));
 
     // <li> の中に [label][削除ボタン] を入れて、リストに追加する
