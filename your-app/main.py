@@ -42,6 +42,7 @@ def init_db():
         CREATE TABLE IF NOT EXISTS studies (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             title TEXT NOT NULL,
+            priority TEXT DEFAULT '中',
             done INTEGER DEFAULT 0
         )
     """)
@@ -58,6 +59,7 @@ class TodoCreate(BaseModel):
     # 新しいTODOを作るときに受け取るデータ
     # title は1文字以上100文字以下の文字列でなければならない
     title: str = Field(min_length=1, max_length=100)
+    priority: str
 
 
 class TodoUpdate(BaseModel):
@@ -78,14 +80,14 @@ def get_todos():
     cursor = conn.cursor()
 
     # studies テーブルの全データを id 順に取り出す
-    cursor.execute("SELECT id, title, done FROM studies ORDER BY id")
+    cursor.execute("SELECT id, title, priority, done FROM studies ORDER BY id")
     todos = cursor.fetchall()  # 取り出した全行をリストで受け取る
 
     conn.close()  # 接続を閉じる
     # 1行は (id, title, done) の順のタプルなので、番号で取り出す。
     # 取り出したデータを、ブラウザに返しやすい辞書のリストに作り変える。
     return [
-        {"id": todo[0], "title": todo[1], "done": bool(todo[2])}
+        {"id": todo[0], "title": todo[1], "priority": todo[2], "done": bool(todo[3])}
         for todo in todos
     ]
 
@@ -99,14 +101,14 @@ def create_todo(todo: TodoCreate):
     # 新しいTODOを1件追加する（done は 0=未完了で登録）
     # ? を使うことで、危険な文字列が混ざってもSQLが壊れない（SQLインジェクション対策）
     cursor.execute(
-        "INSERT INTO studies (title, done) VALUES (?, 0)",
-        (todo.title,),
+        "INSERT INTO studies (title, priority, done) VALUES (?, ?, 0)",
+        (todo.title, todo.priority),
     )
     conn.commit()  # 追加を確定する
     todo_id = cursor.lastrowid  # たった今追加した行の id を取得する
 
     conn.close()
-    return {"id": todo_id, "title": todo.title, "done": False}
+    return {"id": todo_id, "title": todo.title, "priority": todo.priority, "done": False}
 
 
 # PUT /todos/5 のように、URLの {todo_id} の部分が引数 todo_id に入る

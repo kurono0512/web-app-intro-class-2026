@@ -55,6 +55,7 @@ async function addTodo() {
   // 入力欄の要素を取得し、入力された文字を読み取る（trimで前後の空白を除去）
   const input = document.getElementById("todo-input");
   const title = input.value.trim();
+  const priority = document.getElementById("priority-input").value;
 
   // 送信前のチェック（バリデーション）: 空のときは送らずに注意を表示
   if (title === "") {
@@ -73,7 +74,7 @@ async function addTodo() {
     const response = await fetch(API_URL, {
       method: "POST", // POST = 新しいデータを作る
       headers: { "Content-Type": "application/json" }, // 中身はJSON形式だと伝える
-      body: JSON.stringify({ title: title }), // データをJSON文字列にして送る
+      body: JSON.stringify({ title: title, priority: priority}), // データをJSON文字列にして送る
     });
 
     if (!response.ok) {
@@ -176,7 +177,7 @@ function renderTodos(todos) {
     // 勉強記録のタイトル文字。textContent で安全に入れる（XSS対策）
     const titleSpan = document.createElement("span");
     titleSpan.className = "todo-title";
-    titleSpan.textContent = todo.title;
+    titleSpan.textContent = `【${todo.priority}】${todo.title}`;
 
     // label の中に [チェックボックス][タイトル] を入れる
     label.appendChild(checkbox);
