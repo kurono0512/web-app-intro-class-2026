@@ -15,28 +15,38 @@
   </header>
 
   <!-- メインコンテンツ -->
-  <main class="todo-card">
-    <!-- エラーメッセージ表示エリア -->
-    <div id="error-message" class="error-message" style="display: none"></div>
-
-    <!-- TODO入力エリア -->
-    <form id="todo-form" class="input-area">
-      <div class="input-row">
-        <input type="text" id="todo-input" class="todo-input" placeholder="勉強内容を入力..." maxlength="100"
-          autocomplete="off" />
-        <select id="priority-input" class="priority-input">
-          <option value="高">高</option>
-          <option value="中">中</option>
-          <option value="低">低</option>
-        </select>
-      </div>
-      <button type="submit" class="todo-button">記録</button>
-    </form>
-
-    <!-- TODOリスト -->
-    <ul id="todo-list" class="todo-list"></ul>
+  <main class="dashboard">
+    <div class="left-panel">
+      <section class="stats-card">
+        <h3>今日の勉強数</h3>
+        <p id="study-count">0件</p>
+      </section>
+      <section class="stats-card">
+        <h3>達成率</h3>
+        <p id="study-rate">0%</p>
+      </section>
+      <section class="input-card">
+        <h2>勉強を記録</h2>
+        <div id="error-message" class="error-message" style="display: none"></div>
+        <form id="todo-form" class="input-area">
+          <div class="input-row">
+            <input type="text" id="todo-input" class="todo-input" placeholder="勉強内容を入力..." maxlength="100"
+              autocomplete="off" />
+            <select id="priority-input" class="priority-input">
+              <option value="高">高</option>
+              <option value="中">中</option>
+              <option value="低">低</option>
+            </select>
+          </div>
+          <button type="submit" class="todo-button">記録</button>
+        </form>
+      </section>
+    </div>
+    <section class="list-card">
+      <h2>勉強一覧</h2>
+      <ul id="todo-list" class="todo-list"></ul>
+    </section>
   </main>
-
   <!-- フッター -->
   <footer class="footer">
     <p>&copy; 2026 STUDY App</p>
