@@ -26,7 +26,7 @@ const API_URL = "/studies";
 /**
  * 勉強記録一覧を取得して表示する
  */
-async function loadTodos() {
+async function loadStudies() {
   // try ... catch: 通信中にエラーが起きても、アプリが止まらないようにする
   try {
     // サーバーに「一覧をください」とお願いし、返事(response)を待つ
@@ -41,7 +41,8 @@ async function loadTodos() {
 
     // 返ってきたデータ(JSON)をJavaScriptの配列に変換する
     const todos = await response.json();
-    renderTodos(todos); // 画面に描画する
+    renderStudies(todos);
+    updateDashboard(todos);// 画面に描画する
   } catch (error) {
     // そもそもサーバーにつながらなかったときなど
     showError("通信エラーが発生しました");
@@ -51,7 +52,7 @@ async function loadTodos() {
 /**
  * 新しい勉強記録を追加する
  */
-async function addTodo() {
+async function addStudy() {
   // 入力欄の要素を取得し、入力された文字を読み取る（trimで前後の空白を除去）
   const input = document.getElementById("todo-input");
   const title = input.value.trim();
@@ -74,7 +75,7 @@ async function addTodo() {
     const response = await fetch(API_URL, {
       method: "POST", // POST = 新しいデータを作る
       headers: { "Content-Type": "application/json" }, // 中身はJSON形式だと伝える
-      body: JSON.stringify({ title: title, priority: priority}), // データをJSON文字列にして送る
+      body: JSON.stringify({ title: title, priority: priority }), // データをJSON文字列にして送る
     });
 
     if (!response.ok) {
@@ -84,7 +85,7 @@ async function addTodo() {
     }
 
     input.value = ""; // 入力欄を空に戻す
-    await loadTodos(); // 一覧を取り直して、追加結果を画面に反映する
+    await loadStudies(); // 一覧を取り直して、追加結果を画面に反映する
   } catch (error) {
     showError("通信エラーが発生しました");
   }
@@ -94,13 +95,13 @@ async function addTodo() {
  * TODOの完了状態を切り替える
  * id: 対象の勉強記録の番号 / currentDone: いまの完了状態(true/false)
  */
-async function toggleTodo(id, currentDone) {
+async function toggleStudy(id, currentDone) {
   try {
     // `${API_URL}/${id}` で /todos/5 のようなアドレスを作る（id=5のTODOが対象）
     const response = await fetch(`${API_URL}/${id}`, {
       method: "PUT", // PUT = 既存のデータを更新する
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ done: !currentDone }), // !で完了/未完了を反転させる
+      body: JSON.stringify({ done: currentDone }), // !で完了/未完了を反転させる
     });
 
     if (!response.ok) {
@@ -109,7 +110,7 @@ async function toggleTodo(id, currentDone) {
       return;
     }
 
-    await loadTodos(); // 一覧を取り直して、更新結果を画面に反映する
+    await loadStudies(); // 一覧を取り直して、更新結果を画面に反映する
   } catch (error) {
     showError("通信エラーが発生しました");
   }
@@ -119,7 +120,7 @@ async function toggleTodo(id, currentDone) {
  * 勉強記録を削除する
  * id: 削除したいTODOの番号
  */
-async function deleteTodo(id) {
+async function deleteStudy(id) {
   try {
     // /todos/5 のようなアドレスに対して削除を依頼する
     const response = await fetch(`${API_URL}/${id}`, {
@@ -132,7 +133,7 @@ async function deleteTodo(id) {
       return;
     }
 
-    await loadTodos(); // 一覧を取り直して、削除結果を画面に反映する
+    await loadStudies(); // 一覧を取り直して、削除結果を画面に反映する
   } catch (error) {
     showError("通信エラーが発生しました");
   }
@@ -141,7 +142,23 @@ async function deleteTodo(id) {
 // ============================================================
 // 描画
 // ============================================================
+function updateDashboard(todos) {
+  // 勉強数
+  const studyCount = todos.length;
 
+  // 達成済みの数
+  const doneCount = todos.filter(todo => todo.done).length;
+
+  // 達成率
+  const rate =
+    studyCount === 0
+      ? 0
+      : Math.round((doneCount / studyCount) * 100);
+
+  // HTMLを書き換える
+  document.getElementById("study-count").textContent = `${studyCount}件`;
+  document.getElementById("study-rate").textContent = `${rate}%`;
+}
 /**
  * TODOリストを描画する（XSS対策: createElement + textContent）
  *
@@ -152,7 +169,7 @@ async function deleteTodo(id) {
  *  実行されてしまう危険がある（XSS）。そこで textContent を使い、
  *  入力を「ただの文字」として扱うことで、この攻撃を防いでいる。
  */
-function renderTodos(todos) {
+function renderStudies(todos) {
   const list = document.getElementById("todo-list");
   list.innerHTML = ""; // 古い表示を一度すべて消してから描き直す
 
@@ -172,7 +189,9 @@ function renderTodos(todos) {
     checkbox.className = "todo-checkbox";
     checkbox.checked = todo.done; // いまの完了状態をチェックに反映
     // チェックが変わったら、完了状態を切り替える関数を呼ぶ
-    checkbox.addEventListener("change", () => toggleTodo(todo.id, todo.done));
+    checkbox.addEventListener("change", () => {
+      toggleStudy(todo.id, checkbox.checked);
+    });
 
     // 勉強記録のタイトル文字。textContent で安全に入れる（XSS対策）
     const titleSpan = document.createElement("span");
@@ -184,10 +203,11 @@ function renderTodos(todos) {
     label.appendChild(titleSpan);
 
     // 削除ボタン。押されたら削除する関数を呼ぶ
+    // 削除ボタン。押されたら削除する関数を呼ぶ
     const deleteBtn = document.createElement("button");
     deleteBtn.className = "delete-button";
-    deleteBtn.textContent = "達成";
-    deleteBtn.addEventListener("click", () => deleteTodo(todo.id));
+    deleteBtn.textContent = "削除";
+    deleteBtn.addEventListener("click", () => deleteStudy(todo.id));
 
     // <li> の中に [label][削除ボタン] を入れて、リストに追加する
     li.appendChild(label);
@@ -219,8 +239,8 @@ function showError(message) {
 // フォームが送信された（追加ボタン or Enter）ときの動き
 document.getElementById("todo-form").addEventListener("submit", function (e) {
   e.preventDefault(); // ページが再読み込みされる標準動作を止める
-  addTodo(); // 自分で用意した追加処理を呼ぶ
+  addStudy(); // 自分で用意した追加処理を呼ぶ
 });
 
 // ページ読み込み時に、まずTODO一覧を取得して表示する（ここがスタート地点）
-loadTodos();
+loadStudies();
